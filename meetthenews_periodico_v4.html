@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MeetTheNews · Edición Cusi #1</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+  @keyframes paperEntrance {
+    0%   { transform: translateY(120px); opacity: 0; }
+    60%  { transform: translateY(-8px);  opacity: 1; }
+    80%  { transform: translateY(4px);   opacity: 1; }
+    100% { transform: translateY(0px);   opacity: 1; }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    padding: 40px 20px 60px;
+    background: #0a0a0a;
+    min-height: 100vh;
+    overflow-x: hidden;
+    position: relative;
+  }
+  .bg-glow {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    overflow: hidden;
+  }
+  .glow-orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(90px);
+    opacity: 0;
+  }
+  .paper-wrapper {
+    position: relative;
+    z-index: 10;
+    max-width: 710px;
+    margin: 0 auto;
+    animation: paperEntrance 1.1s cubic-bezier(0.22, 1, 0.36, 1) 0.25s both;
+  }
+  :root {
+    --ink: #1a1108;
+    --paper: #ebeae8;
+    --paper-mid: #d8d6d2;
+    --paper-dark: #c8c5c0;
+    --red: #7a1010;
+    --muted: #5a5652;
+  }
+  .paper { background: var(--paper); color: var(--ink); font-family: 'Libre Baskerville', serif; max-width: 680px; margin: 0 auto; border: 2.5px solid var(--ink); box-shadow: 5px 5px 0 var(--ink); }
+  .masthead { border-bottom: 3px double var(--ink); padding: 6px 14px 5px; display: flex; align-items: center; justify-content: space-between; background: var(--paper); }
+  .paper-name { font-family: 'Playfair Display', serif; font-weight: 900; font-size: 42px; letter-spacing: -1px; line-height: 1; text-align: center; color: var(--ink); }
+  .paper-name .sub { font-size: 9.5px; letter-spacing: .18em; text-transform: uppercase; display: block; font-weight: 400; font-family: 'Libre Baskerville', serif; margin-top: 2px; }
+  .masthead-side { font-size: 9px; line-height: 1.7; max-width: 115px; color: var(--ink); }
+  .masthead-side.right { text-align: right; }
+  .masthead-side strong { display: block; font-weight: 700; text-transform: uppercase; letter-spacing: .04em; }
+  .meta-bar { background: var(--ink); color: var(--paper); display: flex; justify-content: space-between; font-size: 8.5px; padding: 3px 14px; letter-spacing: .07em; text-transform: uppercase; }
+  .edition-badge { background: var(--ink); color: var(--paper); font-size: 9px; padding: 2px 10px; letter-spacing: .1em; text-transform: uppercase; display: inline-block; margin-bottom: 5px; }
+  .headline-main { font-family: 'Playfair Display', serif; font-weight: 900; font-size: 40px; line-height: 1.05; letter-spacing: -1px; text-transform: uppercase; margin: 0 0 5px; color: var(--ink); }
+  .headline-sub { font-family: 'Playfair Display', serif; font-weight: 700; font-size: 15px; line-height: 1.25; text-transform: uppercase; border-top: 1.5px solid var(--ink); border-bottom: 1.5px solid var(--ink); padding: 4px 0; margin: 4px 0 5px; }
+  .headline-deck { font-size: 11px; font-style: italic; margin: 0; line-height: 1.5; color: var(--muted); }
+  .headline-zone { padding: 10px 14px 8px; border-bottom: 3px double var(--ink); text-align: center; }
+  .read-more { font-size: 9.5px; font-weight: 700; color: var(--red); letter-spacing: .1em; text-transform: uppercase; display: inline-block; margin-top: 4px; }
+  .col-headline { font-family: 'Playfair Display', serif; font-weight: 700; font-size: 13px; line-height: 1.2; text-transform: uppercase; margin: 0 0 5px; border-bottom: 1px solid var(--ink); padding-bottom: 3px; }
+  .byline { font-size: 9px; font-style: italic; color: var(--muted); margin-bottom: 6px; }
+  .divider { text-align: center; font-size: 11px; color: var(--muted); margin: 5px 0; letter-spacing: 6px; }
+  .pull-quote { border-top: 2px solid var(--ink); border-bottom: 2px solid var(--ink); margin: 8px 0; padding: 5px 6px; font-family: 'Playfair Display', serif; font-weight: 700; font-style: italic; font-size: 12px; text-align: center; line-height: 1.35; color: var(--red); }
+  .body-zone { display: grid; grid-template-columns: 1fr 195px; border-top: 1px solid var(--ink); }
+  .left-col { border-right: 1px solid var(--ink); }
+  .text-columns { display: grid; grid-template-columns: 1fr 1fr; }
+  .col { padding: 9px 11px; font-size: 10.5px; line-height: 1.6; border-right: 1px solid var(--ink); }
+  .col:last-child { border-right: none; }
+  .col p { margin: 0 0 6px; }
+  .right-col { padding: 10px 10px 6px; }
+  .photo-box {
+    border: 1.5px solid var(--ink);
+    background: var(--paper-dark);
+    height: 155px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 5px;
+    overflow: hidden;
+    position: relative;
+  }
+  .photo-box img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .photo-label { position: absolute; bottom: 0; left: 0; right: 0; background: rgba(26,17,8,0.85); color: var(--paper); font-size: 8px; text-align: center; padding: 3px 5px; letter-spacing: .05em; text-transform: uppercase; }
+  .photo-placeholder { font-size: 10px; color: var(--muted); text-align: center; line-height: 1.5; padding: 8px; }
+  .sidebar-box { border: 1.5px solid var(--ink); background: var(--paper-mid); padding: 6px 8px; font-size: 9.5px; line-height: 1.55; margin-bottom: 6px; }
+  .sidebar-box strong { display: block; text-transform: uppercase; font-size: 9px; letter-spacing: .05em; margin-bottom: 3px; border-bottom: 1px solid var(--ink); padding-bottom: 2px; }
+  .evidence-box { border: 1.5px solid var(--red); background: var(--paper-mid); padding: 6px 8px; font-size: 9.5px; line-height: 1.55; }
+  .evidence-box strong { display: block; color: var(--red); text-transform: uppercase; font-size: 9px; letter-spacing: .05em; margin-bottom: 3px; border-bottom: 1px solid var(--red); padding-bottom: 2px; }
+  .section-divider { background: var(--ink); color: var(--paper); text-align: center; font-family: 'Playfair Display', serif; font-size: 11px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; padding: 4px 0; }
+  .renkyu-grid { display: grid; grid-template-columns: 1fr 190px; border-bottom: 2px solid var(--ink); }
+  .renkyu-main { padding: 9px 12px; font-size: 10.5px; line-height: 1.6; border-right: 1px solid var(--ink); }
+  .renkyu-main p { margin: 0 0 6px; }
+  .renkyu-side { padding: 9px 10px; }
+  .alert-badge { background: var(--red); color: var(--paper); font-size: 8.5px; padding: 2px 8px; letter-spacing: .08em; text-transform: uppercase; display: inline-block; margin-bottom: 5px; }
+  .renkyu-photo-box { border: 1.5px solid var(--ink); background: var(--paper-dark); height: 145px; display: flex; flex-direction: column; align-items: center; justify-content: center; overflow: hidden; position: relative; margin-bottom: 5px; }
+  .renkyu-photo-box img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .levelart-box { border: 2px solid var(--ink); background: var(--paper-mid); padding: 7px 9px; text-align: center; font-size: 9.5px; line-height: 1.5; margin-top: 6px; }
+  .levelart-box .ltitle { font-family: 'Playfair Display', serif; font-weight: 900; font-size: 14px; text-transform: uppercase; letter-spacing: .04em; margin-bottom: 2px; }
+  .levelart-box .ldate { background: var(--ink); color: var(--paper); display: inline-block; padding: 2px 9px; font-size: 8.5px; letter-spacing: .1em; margin: 3px 0; text-transform: uppercase; }
+  .levelart-box a { color: var(--red); font-weight: 700; font-size: 9px; text-transform: uppercase; letter-spacing: .06em; display: block; margin-top: 3px; }
+  .mig-grid { display: grid; grid-template-columns: 1fr 1fr; border-bottom: 2px solid var(--ink); }
+  .mig-col { padding: 9px 12px; font-size: 10.5px; line-height: 1.6; border-right: 1px solid var(--ink); }
+  .mig-col:last-child { border-right: none; }
+  .mig-col p { margin: 0 0 6px; }
+  .warning-tag { background: #3a2800; color: var(--paper); font-size: 8.5px; padding: 2px 7px; letter-spacing: .07em; text-transform: uppercase; display: inline-block; margin-bottom: 5px; }
+  .names-box { border: 1px solid var(--ink); background: var(--paper-dark); padding: 5px 8px; font-size: 9.5px; line-height: 1.7; margin: 5px 0; }
+  .names-box strong { display: block; text-transform: uppercase; font-size: 9px; letter-spacing: .05em; border-bottom: 1px solid var(--ink); padding-bottom: 2px; margin-bottom: 3px; }
+  .mig-pull { border-left: 3px solid var(--red); padding: 4px 8px; margin: 6px 0; font-style: italic; font-size: 10px; color: var(--red); line-height: 1.4; }
+  .pomni-grid { display: grid; grid-template-columns: 1fr 190px; }
+  .pomni-main { padding: 9px 12px; font-size: 10.5px; line-height: 1.6; border-right: 1px solid var(--ink); }
+  .pomni-main p { margin: 0 0 6px; }
+  .pomni-side { padding: 9px 10px; }
+  .pomni-photo-box { border: 1.5px solid var(--ink); background: var(--paper-dark); height: 155px; display: flex; flex-direction: column; align-items: center; justify-content: center; overflow: hidden; position: relative; margin-bottom: 5px; }
+  .pomni-photo-box img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .curiosity-badge { background: #2a3a00; color: var(--paper); font-size: 8.5px; padding: 2px 8px; letter-spacing: .08em; text-transform: uppercase; display: inline-block; margin-bottom: 5px; }
+  .footer-bar { border-top: 3px double var(--ink); background: var(--paper-mid); padding: 5px 14px; display: flex; justify-content: space-between; align-items: center; font-size: 9px; }
+  .footer-bar .slogan { font-style: italic; color: var(--muted); }
+</style>
+</head>
+<body>
+
+<div class="bg-glow" id="bgGlow"></div>
+
+<div class="paper-wrapper">
+<div class="paper">
+
+  <div class="masthead">
+    <div class="masthead-side">
+      <strong>Dir. Archimedes</strong>
+      <span>No tengo sencillo</span>
+      <span>hm hmm hm hm</span>
+    </div>
+    <div style="text-align:center;">
+      <div class="paper-name">MeetTheNews
+        <span class="sub">Meet The Causas · Periódico Oficial</span>
+      </div>
+    </div>
+    <div class="masthead-side right">
+      <strong>Edición Cusi #1</strong>
+      <span id="paper-date">—</span>
+      <span>- Paloma de mrd</span>
+    </div>
+  </div>
+
+  <div class="meta-bar">
+    <span>Director: Archimedes</span>
+    <span>MeetTheNews · El periódico de los Cusis</span>
+    <span>Edición MTC · Semana #1</span>
+  </div>
+
+  <!-- NOTICIA 1 -->
+  <div class="headline-zone">
+    <div class="edition-badge">✦ Denuncia pública · Arte ✦</div>
+    <div class="headline-main">ACOSO EN LA<br>ESCENA ARTÍSTICA</div>
+    <div class="headline-sub">Tsurikuya y Ender_Drawner alzan la voz contra «rotten.ee1»</div>
+    <div class="headline-deck">Dos artistas presentan pruebas de meses de acoso sistemático que habría afectado a feriantes y creadores de la escena local</div>
+  </div>
+
+  <div class="body-zone">
+    <div class="left-col">
+      <div class="text-columns">
+        <div class="col">
+          <div class="col-headline">La denuncia</div>
+          <div class="byline">Por el corresponsal de MeetTheNews</div>
+          <p>La artista <strong>tsurikuya</strong> presentó una denuncia pública respaldada por su colega y amiga <strong>ender_drawner</strong>. Ambos señalan a Ren, conocida como <strong>rotten.ee1</strong>, de haberlos acosado durante varios meses de manera sostenida.</p>
+          <p>El acoso habría interferido directamente en su trabajo y producción artística, afectando también a otros artistas y feriantes de la escena independiente.</p>
+          <div class="divider">— ✦ —</div>
+          <div class="col-headline" style="margin-top:5px;">Un patrón preocupante</div>
+          <p>Las denunciantes describen que Ren buscaría integrarse al mundo artístico para luego atacar o generar conflictos con quienes les va mejor que a ella.</p>
+        </div>
+        <div class="col">
+          <div class="col-headline">Las pruebas</div>
+          <p>Los artistas han reunido <strong>audios, capturas de pantalla y testimonios</strong> en un documento de Google Drive abierto al público como respaldo a sus acusaciones.</p>
+          <div class="pull-quote">"Queremos que más artistas estén informados y que esto no le pase a nadie más."<br><span style="font-size:10px;font-weight:400;">— tsurikuya</span></div>
+          <div class="col-headline" style="margin-top:4px;">El llamado</div>
+          <p>Piden a la comunidad difundir el caso para proteger a otros artistas y prevenir situaciones similares en el futuro. Alex dice que no lo hagas, evitas problemas</p>
+          <a href="https://drive.google.com/drive/mobile/folders/1hTByMQehSOQPUrBfjFwnwy-RcF90W_yc?hl=es&fbclid=PAZnRzaASRYONleHRuA2FlbQIxMQBzcnRjBmFwcF9pZA8xMjQwMjQ1NzQyODc0MTQAAaflCLMq4MFFQWCu5Fcc51PMLdmu7EXsjEdKKl8OBPKfeE-7VBXm0-NC3Hcpqw_aem_YWdncwDXY3AciFjc6M471eBd1ohb&brid=YWdncwH1Sy0aBhwWTQEoQlJ-JtGI" target="_blank" style="text-decoration:none;">
+  <span class="read-more">▸ ERES CHISMOS@?! dale click y vas a las pruebas</span>
+</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="right-col">
+      <!-- ══ FOTO NOTICIA 1 ══ pon el nombre de tu archivo en src -->
+      <div class="photo-box">
+        <img src="C:\Users\pc\Desktop\Noticia\WhatsApp Image 2026-06-10 at 8.39.50 PM (1).jpeg" alt="Foto del caso"
+             onerror="this.style.display='none'; this.parentElement.querySelector('.photo-placeholder').style.display='block';">
+        <div class="photo-placeholder" style="display:none;">📷<br>Foto del caso</div>
+        <div class="photo-label">No es grumete?</div>
+      </div>
+      <div style="height:6px;"></div>
+      <div class="sidebar-box">
+        <strong>✦ Involucrados</strong>
+        <span><strong>Denunciante:</strong> tsurikuya</span><br>
+        <span><strong>Apoyo:</strong> ender_drawner</span><br>
+        <span><strong>Acusada:</strong> Ren · rotten.ee1</span>
+      </div>
+      <div class="evidence-box">
+        <strong>⚑ Evidencias</strong>
+        <span>· Audios</span><br>
+        <span>· Capturas de pantalla</span><br>
+        <span>· Testimonios</span><br>
+        <span>· Doc. Google Drive</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- NOTICIA 2: RENKYU -->
+  <div class="section-divider">✦ &nbsp; Sucesos en eventos &nbsp; ✦</div>
+  <div class="headline-zone" style="border-top:none; padding:8px 14px 6px;">
+    <div class="alert-badge">⚑ Alerta · Evento Renkyu</div>
+    <div class="headline-main" style="font-size:30px; margin:3px 0;">EL «APUÑALADOR DE ARENALES»<br>REAPARECE EN LA RENKYU</div>
+    <div class="headline-deck">Reporte de campo · MeetTheNews</div>
+  </div>
+
+  <div class="renkyu-grid">
+    <div class="renkyu-main">
+      <p>Durante el evento Renkyu, diversos artistas y asistentes reportaron haber reconocido a la persona apodada el <strong>«Apuñalador de Arenales»</strong> circulando por las instalaciones. Según los testimonios recogidos, el individuo habría estado acosando a feriantes durante el transcurso del evento.</p>
+      <p>Lo que llama la atención es que la seguridad del evento, en lugar de prestar atención a esta situación, habría estado considerablemente más enfocada en <strong>xiaro</strong>(MALDITA), dejando así un flanco abierto que el sujeto aprovechó para moverse sin mayores restricciones entre los puestos.</p>
+      <div class="divider">— ✦ —</div>
+      <div class="col-headline" style="margin-top:5px;">¿Qué dicen los artistas?</div>
+      <p>Varios feriantes confirmaron haber reconocido al individuo y expresaron su malestar ante la falta de acción del personal de seguridad. Algunos señalan que no es la primera vez que este sujeto aparece en eventos de la comunidad.</p>
+      <span class="read-more">▸ MANTENTE ALERTA CAUSAM</span>
+      <div style="margin-top:8px; border-top:1px solid var(--ink); padding-top:8px;">
+        <div class="col-headline" style="font-size:12px;">Próximamente en Arenales</div>
+        <div class="levelart-box">
+          <div class="ltitle">Level Art Alley</div>
+          <div style="font-size:9px;margin-bottom:2px;">El evento más esperado de junio (Avisen quienes van csm)</div>
+          <div class="ldate">🔥 13 y 14 de Junio 🔥</div>
+          <div style="font-size:9px;margin-top:2px;">Zona de Eventos · CC Arenales</div>
+          <div style="font-size:9px;font-style:italic;">¡Arte para subir de nivel!</div>
+          <a href="https://www.instagram.com/levelart_alley/" target="_blank">▸ @levelart_alley</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="renkyu-side">
+      <!-- ══ FOTO NOTICIA 2 ══ pon el nombre de tu archivo en src -->
+      <div class="renkyu-photo-box">
+        <img src="C:\Users\pc\Desktop\Noticia\WhatsApp Image 2026-06-10 at 8.39.50 PM.jpeg" alt="Foto Renkyu"
+             onerror="this.style.display='none'; this.parentElement.querySelector('.photo-placeholder').style.display='block';">
+        <div class="photo-placeholder" style="display:none;">📷<br>Foto del<br>incidente</div>
+        <div class="photo-label">Malditoooo</div>
+      </div>
+      <div class="sidebar-box" style="margin-top:6px;">
+        <strong>⚑ Dato clave</strong>
+        <span>Seguridad enfocada en xiaro mientras el sujeto circulaba libremente entre los puestos.</span>
+      </div>
+      <div class="sidebar-box">
+        <strong>✦ ¿Lo reconoces?</strong>
+<span>Si no lo reconoces, mírate un iceberg de Arenales y sabrás... o pregúntale a Alex.</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- NOTICIA 3: MIGAJEROS -->
+  <div class="section-divider">✦ &nbsp; C grupo p &nbsp; ✦</div>
+  <div class="headline-zone" style="border-top:none; padding:8px 14px 6px;">
+    <div class="warning-tag">⚑ Advertencia comunitaria · Cosplay</div>
+    <div class="headline-main" style="font-size:26px; margin:3px 0;">«TEAM MIGAJEROS»:<br>SEÑALES DE ALARMA</div>
+    <div class="headline-sub" style="font-size:12px;">Capturas revelan advertencias sobre grupo cosplay considerado problemático</div>
+  </div>
+
+  <div class="mig-grid">
+    <div class="mig-col">
+      <div class="col-headline">¿Qué es el Team Migajeros?</div>
+      <div class="byline">Fuentes anónimas · Capturas verificadas</div>
+      <p>En capturas que circulan dentro de la comunidad se hace referencia a un grupo de cosplayers multifandom conocido informalmente como <strong>«Team Migajeros»</strong>. Múltiples personas advierten que no sería recomendable integrarse ni relacionarse con este colectivo.</p>
+      <p>Los mensajes describen el entorno como problemático, señalando comportamientos conflictivos, alborotos y situaciones consideradas peligrosas dentro de eventos y círculos de cosplay locales.</p>
+      <div class="mig-pull">«No es recomendable entrar a ese grupo... ya tiene historial en eventos.»</div>
+      <div class="col-headline" style="margin-top:4px;">Papon yt gaa</div>
+      <p>Nuestro querido webiwabo habría sido invitado a unirse al grupo. Posteriormente le advirtieron sobre los antecedentes de sus integrantes. Se indica que Papon ya conocía algunos rumores sobre ciertos miembros.</p>
+    </div>
+    <div class="mig-col">
+      <div class="col-headline">Figuras mencionadas</div>
+      <div class="names-box">
+        <strong>✦ Identificados en el grupo</strong>
+        <span>· <strong>Rey Chancho</strong> — múltiples antecedentes y molestares a otros cosplayers</span><br>
+        <span>· <strong>Ratón Sonic</strong> — identificado por su cosplay/el bigoton</span><br>
+        <span>· <strong>La Paisana</strong> — mencionado con Rey Chancho, segun informante, es bueno, mas no el chancho</span><br>
+        <span>· Otros identificados por cosplays conocidos</span>
+      </div>
+      <div class="col-headline" style="margin-top:5px;">Vetos y polémicas</div>
+      <p>Algunos integrantes habrían sido <strong>vetados de eventos como Sugoi</strong> o estarían relacionados con polémicas previas dentro de la comunidad cosplay.</p>
+      <p>El tema gira alrededor de advertencias y preocupaciones sobre personas y grupos considerados conflictivos por artistas y asistentes habituales de la escena.</p>
+      <div class="pull-quote">WARA WERI WARA WA.</div>
+      <span class="read-more">▸ voy a llamar al charger</span>
+    </div>
+  </div>
+<!-- NOTICIAS CORTAS -->
+<div class="section-divider">✦ &nbsp; Noticias cortas &nbsp; ✦</div>
+<div style="display:grid; grid-template-columns:1fr 1fr; border-bottom:2px solid var(--ink);">
+
+  <div style="padding:9px 12px; font-size:10.5px; line-height:1.6; border-right:1px solid var(--ink);">
+    <div class="col-headline"> Sideral: cuenta regresiva</div>
+    <p>Fuentes cercanas confirman lo que muchos sospechaban: <strong>Sideral</strong> habría sido captado en pleno acto de infidelidad. Las pruebas circulan. El monstruo tiene los días contados. <em>Por fin.</em></p>
+    <div class="divider">— ✦ —</div>
+    <div class="col-headline" style="margin-top:6px;"> Comba vs. los pollos</div>
+    <p><strong>Comba</strong> protagonizó un incidente de alto voltaje con los pollos del supermercado. La comunidad se divide: ¿héroe que defiende lo suyo, o villano sin escrúpulos? El debate sigue abierto.</p>
+  </div>
+
+  <div style="padding:9px 12px; font-size:10.5px; line-height:1.6;">
+    <div class="col-headline"> ¿La China o el Sombrero?</div>
+    <p>El Perú se prepara. En los próximos días se sabrá quién tomará las riendas del país: <strong>La keiko</strong> o <strong>El JP</strong>. Nos vamos a Mercenary Park.</p>
+    <div class="divider">— ✦ —</div>
+<div class="col-headline" style="margin-top:6px;"> Cusi baneado de tiktok</div>
+<p>Un miembro de los Cusis fue <strong>baneado de TikTok</strong> tras pelearse con votantes de <strong>JP</strong>. No diremos quién. Pero él sabe.</p>
+<span class="read-more">▸ Sus últimas palabras fueron: “vosh votarsh por jp”</span>
+  </div>
+
+</div>
+  <!-- NOTICIA 4: POMNI -->
+  <div class="section-divider">✦ &nbsp; Avistamiento inusual&nbsp; ✦</div>
+  <div class="headline-zone" style="border-top:none; padding:8px 14px 6px;">
+    <div class="curiosity-badge">✦ Crónica de sucesos · Digital Circus</div>
+    <div class="headline-main" style="font-size:26px; margin:3px 0;">AVISTADO «EL CHICO QUE<br>SE PARECE A POMNI»<br>EN EL CINE</div>
+    <div class="headline-sub" style="font-size:12px;">Estreno de la película de Digital Circus deja más de una sorpresa en los pasillos</div>
+    <div class="headline-deck">El misterioso individuo fue visto durante la función pero no respondía a ningún estímulo externo</div>
+  </div>
+
+  <div class="pomni-grid">
+    <div class="pomni-main">
+      <div class="col-headline">El avistamiento</div>
+      <div class="byline">Todo lo que hace por su taxi · MeetTheNews</div>
+      <p>Durante el estreno de la tan esperada película de <strong>The Amazing Digital Circus</strong>, varios asistentes reportaron haber visto a un individuo que guarda un parecido <em>inquietante</em> con el personaje de <strong>Pomni</strong> en las instalaciones del cine.</p>
+      <p>Lo que más llamó la atención no fue su apariencia, sino su comportamiento: según los testigos presentes, el sujeto <strong>no hacía caso a absolutamente nadie</strong>. Se le intentó hablar en repetidas ocasiones y la respuesta fue siempre la misma — que pasa...</p>
+      <div class="divider">— ✦ —</div>
+<div class="col-headline" style="margin-top:5px;">¿Votadaso o simplemente Farids?</div>
+
+<p>La teoría más popular entre los presentes es que el individuo simplemente estaba <strong>farmeando aura</strong>, ignorando por completo a los demás mientras observaba fijamente algún punto inexistente del cine.</p>
+
+<p>Otros aseguran que no estaba “votadaso” en absoluto… sino que simplemente era <strong>Farid siendo Farid</strong>.</p>
+
+<p>Hasta el momento no se ha podido establecer contacto. Las autoridades del cine afirman no haber recibido ninguna queja. Él solo... estaba ahí.</p>
+
+<span class="read-more">▸ CASO ABIERTO · SE ACEPTAN DENUNCIAS</span>
+    </div>
+
+    <div class="pomni-side">
+      <!-- ══ FOTO NOTICIA 4 ══ pon el nombre de tu archivo en src -->
+      <div class="pomni-photo-box">
+        <img src="C:\Users\pc\Desktop\Noticia\WhatsApp Image 2026-06-10 at 8.39.49 PM.jpeg" alt="Foto avistamiento"
+             onerror="this.style.display='none'; this.parentElement.querySelector('.photo-placeholder').style.display='block';">
+        <div class="photo-placeholder" style="display:none;">📷<br>Foto del<br>avistamiento</div>
+        <div class="photo-label">¿El chico Pomni?</div>
+      </div>
+      <div class="sidebar-box" style="margin-top:6px;">
+        <strong>✦ Datos del avistamiento</strong>
+        <span><strong>Lugar:</strong> Cines del estreno</span><br>
+        <span><strong>Evento:</strong> Película Digital Circus</span><br>
+        <span><strong>Estado:</strong> Votadaso · No reactivo</span><br>
+        <span><strong>Caso:</strong> Abierto</span>
+      </div>
+      <div class="evidence-box">
+        <strong>⚑ ¿Lo visteeeee?</strong>
+        <span>Si tienes fotos o testimonios del avistamiento, contacta a CapitanPerú para que lo castigue.</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer-bar">
+    <span>✦ MeetTheNews · Dir. Archimedes</span>
+    <span class="slogan">«MTC lo sabe todo»</span>
+    <span>Pág. 1 · Edición Cusi #1</span>
+  </div>
+
+</div>
+</div>
+
+<script>
+  const months = ['ENERO','FEBRERO','MARZO','ABRIL','MAYO','JUNIO','JULIO','AGOSTO','SEPTIEMBRE','OCTUBRE','NOVIEMBRE','DICIEMBRE'];
+  const days   = ['DOMINGO','LUNES','MARTES','MIÉRCOLES','JUEVES','VIERNES','SÁBADO'];
+  const now    = new Date();
+  document.getElementById('paper-date').textContent =
+    days[now.getDay()] + ', ' + now.getDate() + ' DE ' + months[now.getMonth()];
+
+  const container = document.getElementById('bgGlow');
+  const COLORS = [
+    'rgba(40, 80, 220, 0.55)',
+    'rgba(20, 60, 200, 0.40)',
+    'rgba(180, 20, 20, 0.50)',
+    'rgba(200, 30, 30, 0.35)',
+    'rgba(60, 100, 240, 0.45)',
+    'rgba(160, 10, 10, 0.45)',
+  ];
+
+  function rand(a, b) { return a + Math.random() * (b - a); }
+
+  function spawnOrb() {
+    const color = COLORS[Math.floor(Math.random() * COLORS.length)];
+    const orb   = document.createElement('div');
+    orb.className = 'glow-orb';
+    const w = rand(160, 420), h = rand(120, 340);
+    const x = rand(-5, 90), y = rand(-5, 90);
+    const dur = rand(4000, 9000);
+    orb.style.cssText = `width:${w}px;height:${h}px;left:${x}vw;top:${y}vh;background:radial-gradient(ellipse,${color} 0%,transparent 70%);`;
+    const anim = orb.animate([
+      { opacity: 0, transform: 'scale(0.6) translate(0,0)' },
+      { opacity: 1, transform: `scale(1) translate(${rand(-15,15)}px,${rand(-10,10)}px)`, offset: rand(0.3,0.5) },
+      { opacity: 0, transform: `scale(1.3) translate(${rand(-20,20)}px,${rand(-15,15)}px)` }
+    ], { duration: dur, easing: 'ease-in-out', fill: 'forwards' });
+    container.appendChild(orb);
+    anim.onfinish = () => orb.remove();
+  }
+
+  function scheduleOrb() {
+    spawnOrb();
+    setTimeout(scheduleOrb, rand(400, 2200));
+  }
+
+  for (let i = 0; i < 5; i++) setTimeout(spawnOrb, i * 300);
+  setTimeout(scheduleOrb, 1800);
+</script>
+</body>
+</html>
